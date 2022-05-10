@@ -1,0 +1,44 @@
+Package: redpul
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 0.1.76
+Author: Who wrote it
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+Depends:
+    purrr,
+    jsonlite,
+    dplyr,
+    DBI,
+    RPostgres,
+    glue,
+    readr,
+    dygraphs,
+    xts,
+    state,
+    plumber,
+    shiny,
+    rvest,
+    snakecase,
+    blastula,
+    rlang,
+    ggplot2,
+    ggthemes,
+    longears,
+    cli,
+    countrycode,
+    spacyr,
+    rgeolocate,
+    curl
+Suggests:
+    rextendr,
+    devtools,
+    usethis,
+    styler
+Remotes:
+    atheriel/longears
+RoxygenNote: 7.1.2

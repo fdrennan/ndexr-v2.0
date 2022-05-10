@@ -1,0 +1,16 @@
+^renv$
+^renv\.lock$
+^app\.Rproj$
+^\.Rproj\.user$
+package-json
+package-lock.json
+.env
+.idea
+.sass-cache
+^LICENSE\.md$
+Dockerfile
+Makefile
+app.R
+node_modules
+package.json
+www

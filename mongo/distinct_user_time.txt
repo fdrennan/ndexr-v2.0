@@ -1,0 +1,35 @@
+// Requires official MongoShell 3.6+
+db = db.getSiblingDB("redpul");
+db.getCollection("user_history").aggregate(
+    [
+        {
+            "$project" : {
+                "user_name" : "$user_name",
+                "redis_timestamp" : "$redis_timestamp",
+                "_id" : NumberInt(0)
+            }
+        },
+        {
+            "$group" : {
+                "_id" : null,
+                "distinct" : {
+                    "$addToSet" : "$$ROOT"
+                }
+            }
+        },
+        {
+            "$unwind" : {
+                "path" : "$distinct",
+                "preserveNullAndEmptyArrays" : false
+            }
+        },
+        {
+            "$replaceRoot" : {
+                "newRoot" : "$distinct"
+            }
+        }
+    ],
+    {
+        "allowDiskUse" : true
+    }
+);

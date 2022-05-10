@@ -1,0 +1,144 @@
+@use "styles/index";
+//// 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
+@import "../node_modules/bootstrap/scss/functions";
+//
+//// 2. Include any default variable overrides here
+$font-family-base: 'Fira Code', monospace;
+$font-family-base: 'PT Sans', sans-serif;
+$font-family-base: 'Dongle', sans-serif;
+//// Default variable overrides
+//$body-bg: lighten(black, 60);
+//body {
+//  background: url(images/flowers/IMG_0693.JPG);
+//}
+//$enable-shadows: true;
+
+//// 3. Include remainder of required Bootstrap stylesheets
+@import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/mixins";
+//// 4. Include any optional Bootstrap components as you like
+@import "../node_modules/bootstrap/scss/root";
+@import "../node_modules/bootstrap/scss/reboot";
+@import "../node_modules/bootstrap/scss/type";
+@import "../node_modules/bootstrap/scss/containers";
+@import "../node_modules/bootstrap/scss/grid";
+@import "../node_modules/bootstrap/scss/navbar";
+@import "../node_modules/bootstrap/scss/nav";
+
+ul {
+  display: flex;
+  justify-content: center;
+  list-style-type: none;
+}
+
+.center-it {
+  display: flex;
+  justify-content: start;
+}
+//
+ul li a {
+  display: block;
+  font-size: 1.6rem;
+  padding: 1.5rem 1.6rem;
+  text-decoration: none;
+  transition: all, 0.1s;
+}
+//
+a:visited, a:hover, a:active {
+  text-decoration: none;
+}
+//
+//ul li a:hover {
+//  background-color: #1589d1;
+//    color: #ffffff;
+//}
+
+// d-containers
+.d-flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+
+.flex-between {
+  @extend .d-flex;
+  justify-content: space-between;
+}
+
+// d-containers
+.flex-around {
+  @extend .d-flex;
+  justify-content: space-around;
+}
+
+.flex-start {
+  @extend .d-flex;
+  justify-content: flex-start;
+}
+
+.flex-end {
+  @extend .d-flex;
+  justify-content: flex-end;
+}
+
+.flex-center {
+  @extend .d-flex;
+  justify-content: center;
+}
+
+.row {
+  padding: 13px;
+}
+.lighten-background {
+  background-color: lighten(black, 60);
+}
+
+
+.panel-body {
+  background-color: #131516;
+  background: #131516;
+}
+
+.panel-heading {
+  background-color: #131516;
+  background: #131516;
+}
+
+#panel_background {
+  background-color: #131516;
+  background: #131516;
+}
+
+.active {
+  background-color: #131516;
+  background: #131516;
+}
+
+.selectize-input {
+  background-color: #131516;
+  background: #131516;
+}
+
+.items {
+  background-color: #131516;
+   background: #2196f3 !important;
+   color: #131516 !important;
+ }
+
+.item {
+  background-color: #131516;
+   background: #2196f3 !important;
+   color: #131516 !important;
+ }
+ .selectize-dropdown-content .active {
+   background-color: #131516;
+   background: #2196f3 !important;
+   color: white !important;
+ }
+
+pre {
+  overflow-x: auto;
+  tab-size: 4;
+  font-family: $font-family-base;
+    margin: 0;
+}

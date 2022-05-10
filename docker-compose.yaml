@@ -1,0 +1,198 @@
+# https://www.domysee.com/blogposts/reverse-proxy-nginx-docker-compose
+version: '3.4'
+services:
+  nginx:
+    image: nginx:latest
+    container_name: production_nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - '5050:80'
+      - '443:443'
+    links:
+      - postgres
+      - redis
+      - api
+      - apitwo
+      - apithree
+      - mongo
+      - app
+      - rabbitmq
+      - book
+  postgres:
+    image: postgres:12.3
+    container_name: "postgres"
+    restart: always
+    ports:
+      - '5432:5432'
+    expose:
+      - '5432'
+    env_file: .env
+    volumes:
+      - postgres:/var/lib/postgresql/data
+      - ./volumes/postgres/backups:/data:Z
+    healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+        interval: 30s
+        timeout: 30s
+        retries: 5
+  app:
+    container_name: shiny-app
+    image: redpul
+    restart: always
+    depends_on:
+      - api
+      - redpul
+    user: 'root'
+    ports:
+      - '5000:5000'
+    expose:
+      - '5000'
+    command: ["R", "-e", "shiny::runApp('app.R', port = 5000, launch.browser=FALSE, host='0.0.0.0')"]
+    volumes:
+      - './volumes/shiny/shiny_logs:/var/log'
+      - './.env:/redpul/.env'
+      - './gmail_creds:/redpul/gmail_creds'
+      - './config.yml:/redpul/config.yml'
+    links:
+      - postgres
+      - redis
+      - api
+      - mongo
+  redis:
+    container_name: 'redis'
+    image: redis:6.2-alpine
+    ports:
+      - '6379:6379'
+    expose:
+      - '6379'
+    command: redis-server
+    volumes:
+      - ./volumes/redis:/data
+  redpul:
+    links:
+      - postgres
+      - redis
+    image: redpul
+    container_name: "redpul"
+    volumes:
+      - './gmail_creds:/redpul/gmail_creds'
+      - '.env:/redpul/.env'
+    depends_on:
+      - postgres
+      # - web
+    restart: 'always'
+    env_file: .env
+    command: ["R", "-e", "source('main.R')"]
+  pulse:
+    links:
+      - postgres
+      - redis
+      - rabbitmq
+    image: redpul
+    container_name: "pulse"
+    volumes:
+      - './sql:/redpul/sql'
+      - '.env:/redpul/.env'
+    depends_on:
+      - postgres
+    restart: 'always'
+    env_file: .env
+    command: ["R", "-e", "source('pulse.R')"]
+  api:
+    links:
+      - postgres
+      - redis
+    image: redpul
+    command: ["R", "-e", "library(plumber);pr <- pr_run(pr('plumber.R'), host='0.0.0.0', port=8000);"]
+    volumes:
+      - '.env:/redpul/.env'
+      - './redpul/plumber.R:/redpul/plumber.R'
+      - './volumes/docker/:/redpul/docker'
+    restart: always
+    ports:
+      - "8000:8000"
+  apitwo:
+    links:
+      - postgres
+      - redis
+    image: redpul
+    command: ["R", "-e", "library(plumber);pr <- pr_run(pr('plumber.R'), host='0.0.0.0', port=8000);"]
+    volumes:
+      - '.env:/redpul/.env'
+      - './redpul/plumber.R:/redpul/plumber.R'
+      - './volumes/docker/:/redpul/docker'
+    restart: always
+    ports:
+      - "8001:8000"
+  apithree:
+    links:
+      - postgres
+      - redis
+    image: redpul
+    command: [ "R", "-e", "library(plumber);pr <- pr_run(pr('plumber.R'), host='0.0.0.0', port=8000);" ]
+    volumes:
+      - '.env:/redpul/.env'
+      - './redpul/plumber.R:/redpul/plumber.R'
+      - './volumes/docker/:/redpul/docker'
+    restart: always
+    ports:
+      - "8002:8000"
+  apifour:
+    links:
+      - postgres
+      - redis
+    image: redpul
+    command: [ "R", "-e", "library(plumber);pr <- pr_run(pr('plumber.R'), host='0.0.0.0', port=8000);" ]
+    volumes:
+      - '.env:/redpul/.env'
+      - './redpul/plumber.R:/redpul/plumber.R'
+      - './volumes/docker/:/redpul/docker'
+    restart: always
+    ports:
+      - "8003:8000"
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "27017:27017"
+    expose:
+      - "27017"
+    volumes:
+      - 'shared_database:/data/db'
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - "8081:8081"
+    expose:
+      - "8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    volumes:
+      - ./volumes/rabbitmq/etc/definitions.json:/etc/rabbitmq/definitions.json
+      - ./volumes/rabbitmq/etc/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./volumes/rabbitmq/data:/var/lib/rabbitmq/mnesia/rabbit@my-rabbit
+      - ./volumes/rabbitmq/logs:/var/log/rabbitmq/log
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+      - '1883:1883'
+  book:
+    image: nginx
+    ports:
+      - '8080:80'
+    expose:
+      - '8080'
+    volumes:
+      - ./book/_book/:/usr/share/nginx/html
+volumes:
+  postgres: {}
+  shared_database: {}

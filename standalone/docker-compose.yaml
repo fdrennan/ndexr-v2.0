@@ -1,0 +1,92 @@
+version: '3.4'
+services:
+  postgres:
+    image: postgres:12.3
+    container_name: "postgres"
+    restart: always
+    ports:
+      - '${POSTGRES_PORT}:5432'
+    expose:
+      - '${POSTGRES_PORT}'
+    env_file: .env.docker
+    volumes:
+      - postgres:/var/lib/postgresql/data
+      - ./volumes/postgres/backups:/data:Z
+    healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+        interval: 30s
+        timeout: 30s
+        retries: 5
+  shiny:
+    container_name: shiny
+    image: fdrennan/redpul:latest
+    restart: always
+    user: 'root'
+    ports:
+      - '80:9000'
+    command: ["R", "-e", "shiny::runApp('app.R', port = 9000, launch.browser=FALSE, host='0.0.0.0')"]
+    volumes:
+      - './volumes/shiny/shiny_logs:/var/log/shiny-server'
+      - './frontend/www:/redpul/www'
+      - './frontend/app.R:/redpul/app.R'
+      - './frontend/node_modules:/redpul/node_modules'
+      - './.env.docker:/redpul/.env'
+    links:
+      - postgres
+      - redis
+      - api
+#      - rabbitmq
+  redis:
+    container_name: 'redis'
+    image: redis:6.2-alpine
+    ports:
+      - '6379:6379'
+    expose:
+      - '6379'
+    command: redis-server
+    volumes:
+      - ./volumes/redis:/data
+  redpul:
+    links:
+      - postgres
+      - redis
+#      - rabbitmq
+    image: fdrennan/redpul:latest
+    container_name: "redpul"
+    volumes:
+      - './sql:/redpul/sql'
+      - '.env.docker:/redpul/.env'
+      - './redpul/main.R:/redpul/main.R'
+    depends_on:
+      - postgres
+    restart: 'always'
+    env_file: .env.docker
+    command: ["R", "-e", "source('main.R')"]
+  api:
+    links:
+      - postgres
+      - redis
+#      - rabbitmq
+    image: fdrennan/redpul:latest
+    command: ["R", "-e", "library(plumber);pr <- pr_run(pr('plumber.R'), host='0.0.0.0', port=8000);"]
+    volumes:
+      - '.env.docker:/redpul/.env'
+      - './redpul/plumber.R:/redpul/plumber.R'
+    restart: always
+    ports:
+      - "8000:8000"
+#  rabbitmq:
+#    image: rabbitmq:3-management-alpine
+#    hostname: my-rabbit
+#    volumes:
+#      - ./volumes/rabbitmq/etc/definitions.json:/etc/rabbitmq/definitions.json
+#      - ./volumes/rabbitmq/etc/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+#      - ./volumes/rabbitmq/data:/var/lib/rabbitmq/mnesia/rabbit@my-rabbit
+#      - ./volumes/rabbitmq/logs:/var/log/rabbitmq/log
+#    ports:
+#      - '5672:5672'
+#      - '15672:15672'
+#      - '1883:1883'
+
+volumes:
+  postgres: {}

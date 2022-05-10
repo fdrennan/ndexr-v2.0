@@ -1,0 +1,25 @@
+{
+  "name": "redpul",
+  "version": "1.0.0",
+  "description": "``` r # install.packages(\"devtools\") devtools::install_github(\"fdrennan/redpul\") ```",
+  "main": "index.js",
+  "directories": {
+    "man": "backend/man"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fdrennan/redpul.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fdrennan/redpul/issues"
+  },
+  "homepage": "https://github.com/fdrennan/redpul#readme",
+  "dependencies": {
+    "bootstrap": "^5.1.3"
+  }
+}

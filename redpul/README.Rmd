@@ -1,0 +1,49 @@
+---
+output: github_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# redpul
+
+``` r
+# install.packages("devtools")
+devtools::install_github("fdrennan/redpul")
+```
+
+```{r}
+
+library(dplyr)
+library(redpul)
+# Find a bunch of subreddits and then pull their most recent 100 submissions
+submissions <- redpul_find('all')
+
+recent_posts <-
+  submissions %>%
+  filter(!over_18) %>%
+  pull(subreddit) %>%
+  unique() %>%
+  redpul_find()
+
+glimpse(recent_posts)
+
+recent_posts %>%
+  group_by(subreddit) %>%
+  count(sort = TRUE)
+
+```
+[RabbitMQ](http://localhost:15672/)
+
+
+git filter-branch --force --index-filter \
+  'git rm --cached --ignore-unmatch pathrabbitmq/data/quorum/rabbit@my-rabbit/00000006.wal' \
+  --prune-empty --tag-name-filter cat -- --all

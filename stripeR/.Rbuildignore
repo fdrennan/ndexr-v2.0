@@ -1,0 +1,8 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+cran-comments\.md
+\.travis\.yml
+.httr-oauth
+.httr-oauth-SUSPENDED
+stripeR_form.png
+Readme\.md

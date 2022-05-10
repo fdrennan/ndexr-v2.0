@@ -1,0 +1,35 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library(redpul)
+dotenv::load_dot_env()
+con <- postgres_connector()
+
+```
+
+
+```{r}
+counts <- 
+  tbl(con, 'submissions_history') %>% 
+  mutate(
+    created_utc = floor_date(to_timestamp(created_utc), 'hour')
+  ) %>% 
+  filter(created_utc >= local(Sys.Date() - 30)) %>% 
+  group_by(created_utc) %>% 
+  count(name = 'n_obs') %>% 
+  collect()
+```
+
+
+```{r}
+counts %>% 
+  ggplot() +
+  aes(x = created_utc, y = as.numeric(n_obs)) +
+  geom_col()
+```
+
+

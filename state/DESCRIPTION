@@ -1,0 +1,34 @@
+Package: state
+Title: Common connectors and state management for redpul
+Version: 0.0.2.023
+Authors@R: 
+    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: What the package does (one paragraph).
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+Depends:
+  rredis,
+  jsonlite,
+  dotenv,
+  RPostgres,
+  DBI,
+  dbx,
+  tictoc,
+  gdata,
+  renv,
+  dplyr,
+  purrr,
+  mongolite,
+  dplyr,
+  purrr,
+  lubridate,
+  stringr,
+  blastula,
+  cli,
+  httr
+Suggests:
+    styler

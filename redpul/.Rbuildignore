@@ -1,0 +1,14 @@
+^renv$
+^renv\.lock$
+^.*\.Rproj$
+^\.Rproj\.user$
+^README\.Rmd$
+sql
+.dockerignore
+.env
+docker-compose.yaml
+Dockerfile
+main.R
+Makefile
+.config
+src/.idea
